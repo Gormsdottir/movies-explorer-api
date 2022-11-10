@@ -2,11 +2,12 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const auth = require('../middlewares/auth');
 const {
-  getmovies,
-  deletemovie,
+  getMovies,
+  createMovie,
+  deleteMovie,
 } = require('../controllers/movies');
 
-router.get('/movies', auth, getmovies);
+router.get('/movies', auth, getMovies);
 
 router.post(
   '/movies',
@@ -35,7 +36,7 @@ router.delete(
       movieId: Joi.string().required().length(24).hex(),
     }),
   }),
-  deletemovie,
+  deleteMovie,
 );
 
 module.exports = router;

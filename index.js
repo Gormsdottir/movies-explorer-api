@@ -7,7 +7,7 @@ const { errors, celebrate, Joi } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const auth = require('./middlewares/auth');
 const userRouter = require('./routes/users');
-const movieRouter = require('./routes/cards');
+const movieRouter = require('./routes/movies');
 const { errorHandler } = require('./utils/errorHandler');
 const ErrorNotFound = require('./errors/ErrorNotFound');
 
@@ -19,13 +19,21 @@ app.use(requestLogger);
 
 app.use(cors({
   origin: ['https://gormsdottir.diploma.nomoredomains.icu',
-    'http://gormsdottir.diploma.nomoredomains.icu'],
+    'http://gormsdottir.diploma.nomoredomains.icu',
+    'http://localhost:3001',],
   credentials: true,
 }));
 
 const { PORT = 3000 } = process.env;
+const { DATA_BASE, NODE_ENV } = process.env;
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb');
+app.use(bodyParser.json());
+
+mongoose.connect(NODE_ENV === 'production' ? DATA_BASE : 'mongodb://localhost:27017/bitfilmsdb', {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false,
+});
 
 router.post('/signup', celebrate({
   body: Joi.object().keys({
