@@ -18,8 +18,8 @@ app.use(express.json());
 app.use(requestLogger);
 
 app.use(cors({
-  origin: ['https://gormsdottir.mesto.nomoredomains.sbs',
-    'http://gormsdottir.mesto.nomoredomains.sbs'],
+  origin: ['https://gormsdottir.diploma.nomoredomains.icu',
+    'http://gormsdottir.diploma.nomoredomains.icu'],
   credentials: true,
 }));
 
