@@ -8,7 +8,13 @@ const { ServerError } = require('../utils/ServerError');
 const { ConflictError } = require('../utils/ConflictError');
 
 const createUser = (req, res, next) => {
-  const { email, password, name, about, avatar } = req.body;
+  const {
+    email,
+    password,
+    name,
+    about,
+    avatar,
+  } = req.body;
 
   bcrypt
     .hash(password, 10)
@@ -62,20 +68,19 @@ const login = (req, res, next) => {
       );
 
       res.send({ token });
-
     })
     .catch(next);
 };
 
 const getUser = (req, res, next) => {
   User.findById(req.user._id)
-  .then((user) => {
-    if (!user) {
-      throw new NotFoundError(userIdNotFoundText);
-    } else {
-      res.status(200).send(user);
-    }
-  })
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователя с таким id не существует');
+      } else {
+        res.status(200).send(user);
+      }
+    })
     .catch(() => {
       next(new ServerError('Произошла ошибка'));
     });

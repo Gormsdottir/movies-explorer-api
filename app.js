@@ -21,7 +21,7 @@ app.use(requestLogger);
 app.use(cors({
   origin: ['https://gormsdottir.diploma.nomoredomains.icu',
     'http://gormsdottir.diploma.nomoredomains.icu',
-    'http://localhost:3001',],
+    'http://localhost:3001'],
   credentials: true,
 }));
 
