@@ -6,6 +6,12 @@ const { BadRequestError } = require('../utils/BadRequestError');
 const { NotFoundError } = require('../utils/NotFoundError');
 const { ServerError } = require('../utils/ServerError');
 const { ConflictError } = require('../utils/ConflictError');
+const {
+  BadRequestErrorTxt,
+  ConflictErrorTxt,
+  ServerErrorTxt,
+  NotFoundUserTxt,
+} = require('../utils/error-messages');
 
 const createUser = (req, res, next) => {
   const {
@@ -37,20 +43,19 @@ const createUser = (req, res, next) => {
         })
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            const fields = Object.keys(err.errors).join(', ');
-            return next(
-              new BadRequestError(
-                `Переданы некорректные данные при создании пользователя: ${fields}`,
-              ),
+            next(
+              new BadRequestError(BadRequestErrorTxt),
             );
+            return;
           }
           if (err.code === 11000) {
-            return next(
-              new ConflictError('Пользователь с такой почтой уже существует'),
+            next(
+              new ConflictError(ConflictErrorTxt),
             );
+            return;
           }
 
-          return next(new ServerError('Произошла ошибка'));
+          next(new ServerError(ServerErrorTxt));
         });
     })
     .catch(next);
@@ -76,13 +81,13 @@ const getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        throw new NotFoundError('Пользователя с таким id не существует');
+        throw new NotFoundError(NotFoundUserTxt);
       } else {
         res.status(200).send(user);
       }
     })
     .catch(() => {
-      next(new ServerError('Произошла ошибка'));
+      next(new ServerError(ServerErrorTxt));
     });
 };
 
@@ -95,21 +100,18 @@ const updateProfile = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        return next(new NotFoundError('Запрашиваемый пользователь не найден.'));
+        return next(new NotFoundError(NotFoundUserTxt));
       }
       return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        const fields = Object.keys(err.errors).join(', ');
         return next(
-          new BadRequestError(
-            `Переданы некорректные данные при обновлении пользователя: ${fields}`,
-          ),
+          new BadRequestError(BadRequestErrorTxt),
         );
       }
 
-      return next(new ServerError('Произошла ошибка'));
+      return next(new ServerError(ServerErrorTxt));
     });
 };
 
