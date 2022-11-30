@@ -22,21 +22,17 @@ app.use(requestLogger);
 
 app.use(cors({
   origin: ['https://gormsdottir.diploma.nomoredomains.icu',
-    'http://gormsdottir.diploma.nomoredomains.icu',
-    'http://localhost:3001'],
+    'http://localhost:3000'],
   credentials: true,
 }));
 
-const { PORT = 3000 } = process.env;
-const { DATA_BASE, NODE_ENV } = process.env;
+const { PORT = 3000, NODE_ENV, DB_PODUCTION } = process.env;
 
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-mongoose.connect(NODE_ENV === 'production' ? DATA_BASE : hostDB, {
+mongoose.connect(NODE_ENV === 'production' ? DB_PODUCTION : hostDB, {
   useNewUrlParser: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false,
 });
 
 app.use(limiter);
